@@ -3,7 +3,9 @@ const express = require('express'),
   morgan = rquire('morgan'),
   bodyParser = require('body-parser'),
   uuid = require('uuid'),
-  app = express();
+
+
+const app = express();
 
 //
 app.use(bodyParser.json());
@@ -25,8 +27,10 @@ app.get('/', (req, res) => {
   res.send('My Characters');
 });
 
-//
-app.get('/users')
+// gets user data
+app.get('/users', (req, res) => {
+  res.send('Users');
+});
 
 // tells app to listen on port 8080
 app.listen(8080, () => {

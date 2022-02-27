@@ -1,5 +1,6 @@
-const mongoose = require("mongoose");
-const { stringify } = require("uuid");
+const mongoose = require('mongoose'),
+  bcrypt = require('bcrypt');
+const { stringify } = require('uuid');
 
 let characterSchema = mongoose.Schema({
   Name: { type: String, required: true },
@@ -48,9 +49,30 @@ let inventoryItemsSchema = mongoose.Schema({
   Description: { type: String, required: true }
 })
 
-let spellsScema = mongoose.Schema({
-  Name: { type: String, required: True },
-  Type: { type: String, required: True },
-  School: { type: String, required: True },
+let spellsSchema = mongoose.Schema({
+  Name: { type: String, required: true },
+  Type: { type: String, required: true },
+  School: { type: String, required: true },
   Description: { type: String, required: true }
 })
+
+let featSchema = mongoose.Schema({
+  Name: { type: String, required: true},
+  Description: {type: String, required: true}
+})
+
+let Character = mongoose.model('Character', characterSchema);
+let User = mongoose.model('User', userSchema);
+let Race = mongoose.model('Race', raceSchema);
+let Class = mongoose.model('Class', classSchema);
+let Item = mongoose.model('Item', inventoryItemsSchema);
+let Spell = mongoose.model('Spell', spellsSchema);
+let Feat = mongoose.model('Feat', featSchema);
+
+module.exports.Character = Character;
+module.exports.User = User;
+module.exports.Race = Race;
+module.exports.Class = Class;
+module.exports.Item = Item;
+module.exports.Spell = Spell;
+module.exports.Feat = Feat;

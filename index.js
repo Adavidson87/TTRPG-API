@@ -3,6 +3,8 @@ const express = require('express'),
   morgan = rquire('morgan'),
   bodyParser = require('body-parser'),
   uuid = require('uuid'),
+  mongoose = require('mongoose'),
+  Models = require('./models.js');
 
 
 const app = express();

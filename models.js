@@ -1,8 +1,7 @@
 const mongoose = require('mongoose'),
   bcrypt = require('bcrypt');
-const { stringify } = require('uuid');
 
-let characterSchema = mongoose.Schema({
+let savedCharacterSchema = mongoose.Schema({
   Name: { type: String, required: true },
   Class: { type: String, required: true },
   Race: { type: String, required: true },
@@ -35,7 +34,7 @@ let raceSchema = mongoose.Schema({
   FavoredClass: { type: String }
 })
 
-let classSchema = mongoose.Schema({
+let characterClassSchema = mongoose.Schema({
   Name: { type: String, required: true },
   Description: { type: String, required: true },
   Proficiencies: [String],
@@ -57,22 +56,22 @@ let spellsSchema = mongoose.Schema({
 })
 
 let featSchema = mongoose.Schema({
-  Name: { type: String, required: true},
-  Description: {type: String, required: true}
+  Name: { type: String, required: true },
+  Description: { type: String, required: true }
 })
 
-let Character = mongoose.model('Character', characterSchema);
+let SavedCharacter = mongoose.model('Character', savedCharacterSchema);
 let User = mongoose.model('User', userSchema);
 let Race = mongoose.model('Race', raceSchema);
-let Class = mongoose.model('Class', classSchema);
+let Class = mongoose.model('Class', characterClassSchema);
 let Item = mongoose.model('Item', inventoryItemsSchema);
 let Spell = mongoose.model('Spell', spellsSchema);
 let Feat = mongoose.model('Feat', featSchema);
 
-module.exports.Character = Character;
+module.exports.SavedCharacter = SavedCharacter;
 module.exports.User = User;
 module.exports.Race = Race;
-module.exports.Class = Class;
+module.exports.CharacterClass = CharacterClass;
 module.exports.Item = Item;
 module.exports.Spell = Spell;
 module.exports.Feat = Feat;

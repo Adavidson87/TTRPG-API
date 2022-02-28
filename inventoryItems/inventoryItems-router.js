@@ -2,9 +2,9 @@
 const express = require('express'),
   InventoryItemsRouter = express.Router(),
   Models = require('../models.js'),
-  InventoryItems = Models.InventoryItem;
+  InventoryItems = Models.InventoryItem,
   // passport = require('passport'),
-  // { check, validateionResult } = require('express-validator');
+  { check, validationResult } = require('express-validator');
 
 InventoryItemsRouter.get('/', 
 // passport.authenticate('jwt', { session: false }), 
@@ -41,7 +41,7 @@ InventoryItemsRouter.get('/:Type',
 
 InventoryItemsRouter.post('/', [
   check('Name', 'Name is required').not().isEmpty(),
-  check('Name', 'Name cannot contain non alphanumeric characters.').isAlphaNumerica(),
+  check('Name', 'Name cannot contain non alphanumeric characters.').isAlphanumeric(),
   check('Description', 'Description is required'),
   check('Type', 'Type is required').not().isEmpty(),
   check('Value', 'Value is required').not().isEmpty(),

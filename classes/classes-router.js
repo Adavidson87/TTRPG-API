@@ -4,9 +4,9 @@ const res = require('express/lib/response');
 const express = require('express'),
   CharacterClassesRouter = express.Router(),
   Models = require('../models.js'),
-  CharacterClasses = Models.CharacterClass;
-// passport = require('passport'),
-// { check, validateionResult } = require('express-validator');
+  CharacterClasses = Models.CharacterClass,
+  // passport = require('passport'),
+  { check, validationResult } = require('express-validator');;
 
 CharacterClassesRouter.get('/',
   // passport.authenticate('jwt', { session: false }), 
@@ -40,7 +40,7 @@ CharacterClassesRouter.post('/', [
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-  CharacterClass.findOne({ Name: req.body.Name })
+  CharacterClasses.findOne({ Name: req.body.Name })
     .then((characterClass) => {
       if (characterClass) {
         return res.status(400).send(req.body.Name + 'already exists');

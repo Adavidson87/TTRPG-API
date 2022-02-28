@@ -1,5 +1,5 @@
-const mongoose = require('mongoose'),
-  bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+  // bcrypt = require('bcrypt');
 
 let savedCharacterSchema = mongoose.Schema({
   Name: { type: String, required: true },
@@ -63,8 +63,8 @@ let featSchema = mongoose.Schema({
 let SavedCharacter = mongoose.model('Character', savedCharacterSchema);
 let User = mongoose.model('User', userSchema);
 let Race = mongoose.model('Race', raceSchema);
-let Class = mongoose.model('Class', characterClassSchema);
-let Item = mongoose.model('Item', inventoryItemsSchema);
+let CharacterClass = mongoose.model('Class', characterClassSchema);
+let InventoryItem = mongoose.model('Item', inventoryItemsSchema);
 let Spell = mongoose.model('Spell', spellsSchema);
 let Feat = mongoose.model('Feat', featSchema);
 
@@ -72,6 +72,6 @@ module.exports.SavedCharacter = SavedCharacter;
 module.exports.User = User;
 module.exports.Race = Race;
 module.exports.CharacterClass = CharacterClass;
-module.exports.Item = Item;
+module.exports.InventoryItem = InventoryItem;
 module.exports.Spell = Spell;
 module.exports.Feat = Feat;

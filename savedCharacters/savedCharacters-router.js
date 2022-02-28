@@ -2,10 +2,13 @@
 const express = require('express'),
   CharactersRouter = express.Router(),
   Models = require('../models.js'),
-  Characters = Models.Class;
-// passport = require('passport'),
-// { check, validateionResult } = require('express-validator');
+  Characters = Models.Class,
+  // passport = require('passport'),
+  { check, validationResult } = require('express-validator');
 
+/**
+ * Gets list of characters
+ */
 CharactersRouter.get('/',
   // passport.authenticate('jwt', { session: false }), 
   (req, res) => {
@@ -17,6 +20,9 @@ CharactersRouter.get('/',
     });
   });
 
+/**
+ * GETS characters by name
+ */
 CharactersRouter.get('/:Name',
   // passport.authenticate('jwt', { session: false }), 
   (req, res) => {
@@ -28,9 +34,12 @@ CharactersRouter.get('/:Name',
     });
   });
 
-CharacterRouter.post('/', [
+/**
+ * Creates characters
+ */
+CharactersRouter.post('/', [
   check('Name', 'Name is required').not().isEmpty(),
-  check('Name', 'Name cannot contain non alphanumeric characters.').isAlphaNumerica(),
+  check('Name', 'Name cannot contain non alphanumeric characters.').isAlphanumeric(),
   check('Class', 'Class is required').not().isEmpty(),
   check('Race', 'Race is required').not().isEmpty(),
   check('Strength', 'Strength is required').not().isEmpty(),
@@ -77,7 +86,10 @@ CharacterRouter.post('/', [
     });
 });
 
-CharacterRouter.put('/:Name', (req, res) => {
+/**
+ * Updates characters
+ */
+CharactersRouter.put('/:Name', (req, res) => {
   let obj = {};
   if (req.body.Name) {
     obj.Name = req.body.Name
@@ -130,7 +142,10 @@ CharacterRouter.put('/:Name', (req, res) => {
     });
 });
 
-CharacterRouter.delete('/:Name', (req, res) => {
+/**
+ * Deletes characters
+ */
+CharactersRouter.delete('/:Name', (req, res) => {
   Character.findOneAndDelete({ Name: req.params.Name })
     .then((feat) => {
       if (!feat) {

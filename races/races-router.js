@@ -1,9 +1,9 @@
 const express = require('express'),
   RacesRouter = express.Router(),
   Models = require('../models.js'),
-  Races = Models.Race;
-passport = require('passport'),
-  { check, validateionResult } = require('express-validator');
+  Races = Models.Race,
+// passport = require('passport'),
+  { check, validationResult } = require('express-validator');
 
 /**
  * @method get
@@ -28,7 +28,7 @@ RacesRouter.get('/:Name', (req, res) => {
 
 RacesRouter.post('/', [
   check('Name', 'Name is required').not().isEmpty(),
-  check('Name', 'Name cannot contain non alphanumeric characters.').isAlphaNumerica(),
+  check('Name', 'Name cannot contain non alphanumeric characters.').isAlphanumeric(),
   check('Description', 'Description is required').not().isEmpty(),
   check('RacialAblilities', 'Abilities are required').not().isEmpty(),
 ], (req, res) => {

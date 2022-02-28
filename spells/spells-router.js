@@ -1,9 +1,9 @@
 const express = require('express'),
   SpellsRouter = express.Router(),
   Models = require('../models.js'),
-  Spells = Models.Spell;
-// passport = require('passport'),
-// { check, validateionResult } = require('express-validator');
+  Spells = Models.Spell,
+  // passport = require('passport'),
+  { check, validationResult } = require('express-validator');
 
 SpellsRouter.get('/', (req, res) => {
   Spells.find().then((spell) => {
@@ -31,7 +31,7 @@ SpellsRouter.get('/:School', (req, res) => {
 
 SpellsRouter.post('/', [
   check('Name', 'Name is required').not().isEmpty(),
-  check('Name', 'Name cannot contain non alphanumeric characters.').isAlphaNumerica(),
+  check('Name', 'Name cannot contain non alphanumeric characters.').isAlphanumeric(),
   check('Description', 'Description is required').not().isEmpty(),
   check('School', 'School is required').not().isEmpty()
 ], (req, res) => {

@@ -1,9 +1,9 @@
 const express = require('express'),
   FeatsRouter = express.Router(),
   Models = require('../models.js'),
-  Feats = Models.Feat;
-// passport = require('passport'),
-// { check, validateionResult } = require('express-validator');
+  Feats = Models.Feat,
+  // passport = require('passport'),
+  { check, validationResult } = require('express-validator');
 
 FeatsRouter.get('/', (req, res) => {
   Feats.find().then((feat) => {
@@ -23,7 +23,7 @@ FeatsRouter.get('/:Name', (req, res) => {
 
 FeatsRouter.post('/', [
   check('Name', 'Name is required').not().isEmpty(),
-  check('Name', 'Name cannot contain non alphanumeric characters.').isAlphaNumerica(),
+  check('Name', 'Name cannot contain non alphanumeric characters.').isAlphanumeric(),
   check('Description', 'Description is required').not().isEmpty()
 ], (req, res) => {
   let errors = validationResult(req);

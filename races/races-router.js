@@ -1,16 +1,18 @@
 const express = require('express'),
   RacesRouter = express.Router(),
   Models = require('../models.js'),
-  Races = Models.Race,
-// passport = require('passport'),
+  Races = Models.Races,
+  passport = require('passport'),
   { check, validationResult } = require('express-validator');
+
+// mongoose.connect('mongodb://localhost:27017/TTRPG', { useNewUrlParser: true, useUnifiedTopology: true });
 
 /**
  * @method get
  * @param {string} endpoint to return all races
  * @returns {object} returns list of all races.
  */
-RacesRouter.get('/', (req, res) => {
+RacesRouter.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
   Races.find().then((race) => {
     res.status(201).json(race);
   }).catch((err) => {
@@ -18,7 +20,7 @@ RacesRouter.get('/', (req, res) => {
   });
 });
 
-RacesRouter.get('/:Name', (req, res) => {
+RacesRouter.get('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   Races.findOne({ Name: req.params.Name }).then((race) => {
     res.status(201).json(race);
   }).catch((err) => {
@@ -30,8 +32,7 @@ RacesRouter.post('/', [
   check('Name', 'Name is required').not().isEmpty(),
   check('Name', 'Name cannot contain non alphanumeric characters.').isAlphanumeric(),
   check('Description', 'Description is required').not().isEmpty(),
-  check('RacialAblilities', 'Abilities are required').not().isEmpty(),
-], (req, res) => {
+], passport.authenticate('jwt', { session: false }), (req, res) => {
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
@@ -44,7 +45,9 @@ RacesRouter.post('/', [
         Races.create({
           Name: req.body.Name,
           Description: req.body.Description,
-          RacialAbilities: req.body.RacialAbilities
+          RacialTraits: req.body.RacialTraits,
+          FavordClass: req.body.FavoredClass,
+          Languages: req.body.Languages
         })
           .then((race) => { res.status(201).json(race) })
           .catch((error) => {
@@ -59,7 +62,7 @@ RacesRouter.post('/', [
     });
 });
 
-RacesRouter.put('/:Name', (req, res) => {
+RacesRouter.put('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   let obj = {};
   if (req.body.Name) {
     obj.Name = req.body.Name
@@ -67,8 +70,8 @@ RacesRouter.put('/:Name', (req, res) => {
   if (req.body.Description) {
     obj.Description = req.body.Description
   }
-  if (req.body.RacialAbilities) {
-    obj.RacialAbilities = req.body.RacialAbilities
+  if (req.body.RacialTraits) {
+    obj.RacialTraits = req.body.RacialTraits
   }
   Races.findOneAndUpdate({ Name: req.params.Name }, { $set: obj },
     { new: true },
@@ -82,7 +85,7 @@ RacesRouter.put('/:Name', (req, res) => {
     });
 });
 
-RacesRouter.delete('/:Name', (req, res) => {
+RacesRouter.delete('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   Races.findOneAndDelete({ Name: req.params.Name })
     .then((Race) => {
       if (!Race) {

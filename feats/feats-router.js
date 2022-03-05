@@ -2,10 +2,12 @@ const express = require('express'),
   FeatsRouter = express.Router(),
   Models = require('../models.js'),
   Feats = Models.Feat,
-  // passport = require('passport'),
+  passport = require('passport'),
   { check, validationResult } = require('express-validator');
 
-FeatsRouter.get('/', (req, res) => {
+// mongoose.connect('mongodb://localhost:27017/TTRPG', { useNewUrlParser: true, useUnifiedTopology: true });
+
+FeatsRouter.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
   Feats.find().then((feat) => {
     res.status(201).json(feat);
   }).catch((err) => {
@@ -13,7 +15,7 @@ FeatsRouter.get('/', (req, res) => {
   });
 });
 
-FeatsRouter.get('/:Name', (req, res) => {
+FeatsRouter.get('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   Feats.findOne({ Name: req.params.Name }).then((feat) => {
     res.status(201).json(feat);
   }).catch((err) => {
@@ -25,7 +27,7 @@ FeatsRouter.post('/', [
   check('Name', 'Name is required').not().isEmpty(),
   check('Name', 'Name cannot contain non alphanumeric characters.').isAlphanumeric(),
   check('Description', 'Description is required').not().isEmpty()
-], (req, res) => {
+], passport.authenticate('jwt', { session: false }), (req, res) => {
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
@@ -52,7 +54,7 @@ FeatsRouter.post('/', [
     });
 });
 
-FeatsRouter.put('/:Name', (req, res) => {
+FeatsRouter.put('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   let obj = {};
   if (req.body.Name) {
     obj.Name = req.body.Name
@@ -72,7 +74,7 @@ FeatsRouter.put('/:Name', (req, res) => {
     });
 });
 
-FeatsRouter.delete('/:Name', (req, res) => {
+FeatsRouter.delete('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   Feats.findOneAndDelete({ Name: req.params.Name })
     .then((feat) => {
       if (!feat) {

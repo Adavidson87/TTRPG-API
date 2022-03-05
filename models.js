@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-  // bcrypt = require('bcrypt');
+const mongoose = require('mongoose'),
+  bcrypt = require('bcrypt');
 
-let savedCharacterSchema = mongoose.Schema({
+let savedCharactersSchema = mongoose.Schema({
   Name: { type: String, required: true },
   Class: { type: String, required: true },
   Race: { type: String, required: true },
@@ -11,7 +11,7 @@ let savedCharacterSchema = mongoose.Schema({
   Intelligence: { type: Number, required: true },
   Wisdom: { type: Number, required: true },
   Charisma: { type: Number, required: true },
-  Gender: { type: String, required: true },
+  Gender: { type: String },
   Inventory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'InventoryItem' }],
   Spells: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Spell' }],
   Feats: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Feat' }],
@@ -19,14 +19,22 @@ let savedCharacterSchema = mongoose.Schema({
   ImagePath: String,
 });
 
-let userSchema = mongoose.Schema({
+let usersSchema = mongoose.Schema({
   Username: { type: String, required: true },
   Password: { type: String, required: true },
   Email: { type: String, required: true },
   SavedCharacters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }]
 })
 
-let raceSchema = mongoose.Schema({
+usersSchema.statics.hashPassword = (password) => {
+  return bcrypt.hashSync(password, 10);
+};
+
+usersSchema.methods.validatePassword = function (password) {
+  return bcrypt.compareSync(password, this.Password);
+}
+
+let racesSchema = mongoose.Schema({
   Name: { type: String, required: true },
   Description: { type: String, required: true },
   RacialTraits: [String],
@@ -34,7 +42,7 @@ let raceSchema = mongoose.Schema({
   FavoredClass: { type: String }
 })
 
-let characterClassSchema = mongoose.Schema({
+let characterClassesSchema = mongoose.Schema({
   Name: { type: String, required: true },
   Description: { type: String, required: true },
   Proficiencies: [String],
@@ -50,28 +58,37 @@ let inventoryItemsSchema = mongoose.Schema({
 
 let spellsSchema = mongoose.Schema({
   Name: { type: String, required: true },
-  Type: { type: String, required: true },
+  SpellLevel: { type: String, required: true },
   School: { type: String, required: true },
   Description: { type: String, required: true }
 })
 
-let featSchema = mongoose.Schema({
+let spellLevelsSchema = mongoose.Schema({
+  Name: { type: String, required: true },
+  SpellLevel: { type: String, required: true },
+  School: { type: String, required: true },
+  Description: { type: String, required: true }
+})
+
+let featsSchema = mongoose.Schema({
   Name: { type: String, required: true },
   Description: { type: String, required: true }
 })
 
-let SavedCharacter = mongoose.model('Character', savedCharacterSchema);
-let User = mongoose.model('User', userSchema);
-let Race = mongoose.model('Race', raceSchema);
-let CharacterClass = mongoose.model('Class', characterClassSchema);
-let InventoryItem = mongoose.model('Item', inventoryItemsSchema);
-let Spell = mongoose.model('Spell', spellsSchema);
-let Feat = mongoose.model('Feat', featSchema);
+let SavedCharacters = mongoose.model('SavedCharacter', savedCharactersSchema);
+let Users = mongoose.model('User', usersSchema);
+let Races = mongoose.model('Race', racesSchema);
+let CharacterClasses = mongoose.model('Classes', characterClassesSchema);
+let InventoryItems = mongoose.model('Item', inventoryItemsSchema);
+let Spells = mongoose.model('Spell', spellsSchema);
+let SpellLevels = mongoose.model('SpellLevel', spellLevelsSchema);
+let Feats = mongoose.model('Feat', featsSchema);
 
-module.exports.SavedCharacter = SavedCharacter;
-module.exports.User = User;
-module.exports.Race = Race;
-module.exports.CharacterClass = CharacterClass;
-module.exports.InventoryItem = InventoryItem;
-module.exports.Spell = Spell;
-module.exports.Feat = Feat;
+module.exports.SavedCharacters = SavedCharacters;
+module.exports.Users = Users;
+module.exports.Races = Races;
+module.exports.CharacterClasses = CharacterClasses;
+module.exports.InventoryItems = InventoryItems;
+module.exports.Spells = Spells;
+module.exports.SpellLevels = SpellLevels;
+module.exports.Feats = Feats;

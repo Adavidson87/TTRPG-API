@@ -1,51 +1,36 @@
-// imports
 const express = require('express'),
   InventoryItemsRouter = express.Router(),
   Models = require('../models.js'),
-  InventoryItems = Models.InventoryItem,
-  // passport = require('passport'),
+  InventoryItems = Models.InventoryItems,
+  passport = require('passport'),
   { check, validationResult } = require('express-validator');
 
-InventoryItemsRouter.get('/', 
-// passport.authenticate('jwt', { session: false }), 
-(req, res) => {
-  InventoryItem.find().then((inventoryItems) => {
-    res.status(201).json(inventoryItems);
+// mongoose.connect('mongodb://localhost:27017/TTRPG', { useNewUrlParser: true, useUnifiedTopology: true });
+
+InventoryItemsRouter.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
+  InventoryItems.findOne().then((inventoryItem) => {
+    res.status(201).json(inventoryItem);
   }).catch((err) => {
     console.error(err);
     res.status(500).send('Error: ' + err)
   });
 });
 
-InventoryItemsRouter.get('/:Name',
-//  passport.authenticate('jwt', { session: false }), 
- (req, res) => {
-  InventoryItems.findOne({ Name: req.params.Name }).then((inventoryItems) => {
-    res.json(inventoryItems);
+InventoryItemsRouter.get('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
+  InventoryItems.findOne({ Name: req.params.Name }).then((inventoryItem) => {
+    res.json(inventoryItem);
   }).catch((err) => {
     console.error(err);
     res.status(500).send('Error: ' + err)
   });
-}); 
-
-InventoryItemsRouter.get('/:Type',
-//  passport.authenticate('jwt', { session: false }), 
- (req, res) => {
-  InventoryItems.findOne({ Type: req.params.Type }).then((inventoryItems) => {
-    res.json(inventoryItems);
-  }).catch((err) => {
-    console.error(err);
-    res.status(500).send('Error: ' + err)
-  });
-}); 
+});
 
 InventoryItemsRouter.post('/', [
   check('Name', 'Name is required').not().isEmpty(),
-  check('Name', 'Name cannot contain non alphanumeric characters.').isAlphanumeric(),
   check('Description', 'Description is required'),
   check('Type', 'Type is required').not().isEmpty(),
   check('Value', 'Value is required').not().isEmpty(),
-], (req, res) => {
+], passport.authenticate('jwt', { session: false }), (req, res) => {
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
@@ -59,7 +44,8 @@ InventoryItemsRouter.post('/', [
           Name: req.body.Name,
           Description: req.body.Description,
           Type: req.body.Type,
-          Value: req.body.Value
+          Value: req.body.Value,
+          Tag: req.body.Tag
         })
           .then((inventoryItem) => { res.status(201).json(inventoryItem) })
           .catch((error) => {
@@ -74,7 +60,7 @@ InventoryItemsRouter.post('/', [
     });
 });
 
-InventoryItemsRouter.put('/:Name', (req, res) => {
+InventoryItemsRouter.put('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   let obj = {};
   if (req.body.Name) {
     obj.Name = req.body.Name
@@ -88,6 +74,9 @@ InventoryItemsRouter.put('/:Name', (req, res) => {
   if (req.body.Value) {
     obj.Value = req.body.Value
   }
+  if (req.body.Tag) {
+    obj.Value = req.body.Tag
+  }
   InventoryItems.findOneAndUpdate({ Name: req.params.Name }, { $set: obj },
     { new: true },
     (err, updatedInventoryItem) => {
@@ -100,7 +89,7 @@ InventoryItemsRouter.put('/:Name', (req, res) => {
     });
 });
 
-InventoryItemsRouter.delete('/:Name', (req, res) => {
+InventoryItemsRouter.delete('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   InventoryItems.findOneAndDelete({ Name: req.params.Name })
     .then((inventoryItem) => {
       if (!inventoryItem) {

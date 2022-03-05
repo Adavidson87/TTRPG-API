@@ -1,11 +1,13 @@
 const express = require('express'),
   SpellsRouter = express.Router(),
   Models = require('../models.js'),
-  Spells = Models.Spell,
-  // passport = require('passport'),
+  Spells = Models.Spells,
+  passport = require('passport'),
   { check, validationResult } = require('express-validator');
 
-SpellsRouter.get('/', (req, res) => {
+// mongoose.connect('mongodb://localhost:27017/TTRPG', { useNewUrlParser: true, useUnifiedTopology: true });
+
+SpellsRouter.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
   Spells.find().then((spell) => {
     res.status(201).json(spell);
   }).catch((err) => {
@@ -13,16 +15,8 @@ SpellsRouter.get('/', (req, res) => {
   });
 });
 
-SpellsRouter.get('/:Name', (req, res) => {
+SpellsRouter.get('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   Spells.findOne({ Name: req.params.Name }).then((spell) => {
-    res.status(201).json(spell);
-  }).catch((err) => {
-    res.status(500).send('Error: ' + err)
-  });
-});
-
-SpellsRouter.get('/:School', (req, res) => {
-  Spells.findOne({ School: req.params.School }).then((spell) => {
     res.status(201).json(spell);
   }).catch((err) => {
     res.status(500).send('Error: ' + err)
@@ -32,9 +26,10 @@ SpellsRouter.get('/:School', (req, res) => {
 SpellsRouter.post('/', [
   check('Name', 'Name is required').not().isEmpty(),
   check('Name', 'Name cannot contain non alphanumeric characters.').isAlphanumeric(),
+  check('SpellLevel', 'Spell level is required').not().isEmpty(),
   check('Description', 'Description is required').not().isEmpty(),
   check('School', 'School is required').not().isEmpty()
-], (req, res) => {
+], passport.authenticate('jwt', { session: false }), (req, res) => {
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
@@ -46,6 +41,7 @@ SpellsRouter.post('/', [
       } else {
         Spells.create({
           Name: req.body.Name,
+          SpellLevel: req.body.SpellLevel,
           Description: req.body.Description,
           School: req.body.School
         })
@@ -62,10 +58,13 @@ SpellsRouter.post('/', [
     });
 });
 
-SpellsRouter.put('/:Name', (req, res) => {
+SpellsRouter.put('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   let obj = {};
   if (req.body.Name) {
     obj.Name = req.body.Name
+  }
+  if (req.body.SpellLevel) {
+    obj.SpellLevel = req.body.SpellLevel
   }
   if (req.body.Description) {
     obj.Description = req.body.Description
@@ -85,7 +84,7 @@ SpellsRouter.put('/:Name', (req, res) => {
     });
 });
 
-SpellsRouter.delete('/:Name', (req, res) => {
+SpellsRouter.delete('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   Spells.findOneAndDelete({ Name: req.params.Name })
     .then((spell) => {
       if (!spell) {

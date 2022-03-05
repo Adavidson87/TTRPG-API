@@ -1,15 +1,18 @@
 const express = require('express'),
   UsersRouter = express.Router(),
   Models = require('../models.js'),
-  Users = Models.User,
+  Users = Models.Users,
+  passport = require('passport'),
   { check, validationResult } = require('express-validator');
+
+// mongoose.connect('mongodb://localhost:27017/TTRPG', { useNewUrlParser: true, useUnifiedTopology: true });
 
 /**
    * @method GET
    * @param {string} endpoint for getting a list of all users in database
    * @return {object} list of all users in database
    */
-UsersRouter.get('/', (req, res) => {
+UsersRouter.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.find().then((users) => {
     res.status(201).json(users);
   }).catch((err) => {
@@ -24,14 +27,16 @@ UsersRouter.get('/', (req, res) => {
  * @param {string} Username for getting the information about a specific user
  * @return {object} of a single user 
  */
-UsersRouter.get('/:Username', (req, res) => {
-  Users.findOne({ Username: req.params.Username }).then((users) => {
-    res.json(users);
-  }).catch((err) => {
-    console.error(err);
-    res.status(500).send('Error: ' + err);
+UsersRouter.get('/:Username',
+  // passport.authenticate('jwt', { session: false }), 
+  (req, res) => {
+    Users.findOne({ Username: req.params.Username }).then((users) => {
+      res.json(users);
+    }).catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
   });
-});
 
 /**
  * @method PUT
@@ -39,13 +44,14 @@ UsersRouter.get('/:Username', (req, res) => {
  * @param {string} Username of the user that is having information updated
  * @return {object} of user that has been updated
  */
-UsersRouter.put('/:Username', (req, res) => {
+UsersRouter.put('/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
+  let hashedPassword = Users.hashPassword(req.body.Password);
   let obj = {};
   if (req.body.Username) {
     obj.Username = req.body.Username
   }
   if (req.body.Password) {
-    obj.Password = Password
+    obj.Password = hashedPassword
   }
   if (req.body.Email) {
     obj.Email = req.body.Email
@@ -77,13 +83,14 @@ UsersRouter.post('/', [
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
+  let hashedPassword = Users.hashPassword(req.body.Password);
   Users.findOne({ Username: req.body.Username }).then((user) => {
     if (user) {
       return res.status(400).send(req.body.Username + 'already exists');
     } else {
       Users.create({
         Username: req.body.Username,
-        Password: req.body.Password,
+        Password: hashedPassword,
         Email: req.body.Email,
       }).then((user) => { res.status(201).json(user) }).catch((error) => {
         console.error(error);
@@ -104,9 +111,9 @@ UsersRouter.post('/', [
  * @param {string} CharacterId of the character that is being added to list
  * @return {object} of the user's character list that has been added to
  */
-UsersRouter.post('/:Username/savedCharacters/:CharacerId', (req, res) => {
+UsersRouter.post('/:Username/savedCharacters/:SavedCharacterId', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
-    $push: { CharacterList: req.params.CharacterId }
+    $push: { SavedCharacters: req.params.SavedCharacterId }
   },
     { new: true },
     (err, updatedUser) => {
@@ -126,7 +133,7 @@ UsersRouter.post('/:Username/savedCharacters/:CharacerId', (req, res) => {
 * @param {string} CharacterId of the character that is being removed
 * @return {object} of the user's character list that has had character removed
 */
-UsersRouter.delete('/:Username/savedCharacters/:CharacterId', (req, res) => {
+UsersRouter.delete('/:Username/savedCharacters/:SavedCharacterId', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
     $pull: { CharacterList: req.params.CharacterId }
   },
@@ -147,7 +154,7 @@ UsersRouter.delete('/:Username/savedCharacters/:CharacterId', (req, res) => {
 * @param {string} Username of the user being removed
 * @return {object} of users with user removed
 */
-UsersRouter.delete('/:Username', (req, res) => {
+UsersRouter.delete('/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndRemove({ Username: req.params.Username })
     .then((user) => {
       if (!user) {

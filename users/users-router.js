@@ -74,9 +74,10 @@ UsersRouter.put('/:Username', passport.authenticate('jwt', { session: false }), 
  * @return {object} of newly added user
  */
 UsersRouter.post('/', [
-  check('Username', 'Username is required').isLength({ min: 5 }),
+  check('Username', 'Username is required').isLength({ min: 5, max: 12 }),
   check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
   check('Password', 'Password is required').not().isEmpty(),
+  check('Password', 'Password must be between 8 and 16 characters.').isLength({ min: 8, max: 16 }),
   check('Email', 'Email does not appear to be valid').isEmail()
 ], (req, res) => {
   let errors = validationResult(req);

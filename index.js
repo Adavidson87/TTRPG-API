@@ -36,8 +36,8 @@ app.use(methodOverride());
 app.get('/', (req, res) => {
   res.send('My Characters');
 });
-app.listen(8080, () => {
-  console.log('Your app is listening on port');
+app.listen(port, '0.0.0.0', () => {
+  console.log('Your app is listening on port' + port);
 });
 app.use((err, req, res, next) => {
   console.error(err.stack);

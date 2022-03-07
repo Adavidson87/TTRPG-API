@@ -18,7 +18,7 @@ CharacterClassesRouter.get('/', passport.authenticate('jwt', { session: false })
 
 CharacterClassesRouter.get('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   CharacterClasses.findOne({ Name: req.params.Name }).then((characterClass) => {
-    res.json(characterClass);
+    res.status(201).json(characterClass);
   }).catch((err) => {
     console.error(err);
     res.status(500).send('Error: ' + err)

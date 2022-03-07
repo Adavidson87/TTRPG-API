@@ -7,7 +7,7 @@ const express = require('express'),
   bodyParser = require('body-parser'),
   uuid = require('uuid'),
   app = express(),
-  port = procexx.ev.PORT || 8080,
+  // port = process.ev.PORT || 8080,
   config = require('./config.js'),
   CharacterClassesRouter = require('./classes/classes-router'),
   FeatsRouter = require('./feats/feats-router'),
@@ -16,17 +16,9 @@ const express = require('express'),
   CharactersRouter = require('./savedCharacters/savedCharacters-router'),
   SpellsRouter = require('./spells/spells-router'),
   UsersRouter = require('./users/users-router'),
-  Models = require('./models.js'),
-  CharacterClasses = Models.CharacterClasses,
-  Feats = Models.Feats,
-  InventoryItems = Models.InventoryItems,
-  Races = Models.Races,
-  SavedCharacters = Models.SavedCharacters,
-  Spells = Models.Spells,
-  Users = Models.Users,
   mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/TTRPG', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -44,8 +36,8 @@ app.use(methodOverride());
 app.get('/', (req, res) => {
   res.send('My Characters');
 });
-app.listen(port, '0.0.0.0', () => {
-  console.log('Your app is listening on port' + port);
+app.listen(8080, () => {
+  console.log('Your app is listening on port');
 });
 app.use((err, req, res, next) => {
   console.error(err.stack);

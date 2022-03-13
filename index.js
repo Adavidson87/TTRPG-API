@@ -30,25 +30,13 @@ app.use('/savedCharacters', CharactersRouter);
 app.use('/spells', SpellsRouter);
 app.use('/users', UsersRouter);
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(morgan('common')); /* uses morgan to log errors in morgan's commong methods */
-app.use(express.static('public')); /* app uses anything in the public folder */
+app.use(morgan('common'));
+app.use(express.static('public'));
 app.use(methodOverride());
-app.get('/', (req, res) => {
-  res.send('My Characters');
-});
-app.listen(port, '0.0.0.0', () => {
-  console.log('Your app is listening on port' + port);
-});
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Error');
 });
-app.use(cors());
-
-let auth = require('./auth')(app);
-const passport = require('passport');
-require('./passport');
-
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
@@ -59,3 +47,16 @@ app.use(cors({
     return callback(null, true);
   }
 }));
+let allowedOrigions = ['https://localhost:8080', 'http://localhost:1234', 'http://localhost:4200', 'https://adavidson87.github.io/ttrpg-character-sheet']
+let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport');
+
+
+app.get('/', (req, res) => {
+  res.send('My Characters');
+});
+
+app.listen(port, '0.0.0.0', () => {
+  console.log('Your app is listening on port' + port);
+});

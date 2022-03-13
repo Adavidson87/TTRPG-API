@@ -47,7 +47,7 @@ app.use(cors({
     return callback(null, true);
   }
 }));
-let allowedOrigins = ['https://localhost:8080', 'http://localhost:1234', 'http://localhost:4200', 'https://adavidson87.github.io/ttrpg-character-sheet']
+let allowedOrigins = ['localhost:8080', 'localhost:1234', 'localhost:4200', 'https://adavidson87.github.io/ttrpg-character-sheet']
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');

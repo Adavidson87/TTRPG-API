@@ -47,7 +47,7 @@ app.use(cors({
     return callback(null, true);
   }
 }));
-let allowedOrigins = ['localhost:8080', 'localhost:1234', 'localhost:4200', 'https://adavidson87.github.io/ttrpg-character-sheet']
+let allowedOrigins = ['http://localhost:8080', 'http://localhost:1234', 'http://localhost:4200', 'https://adavidson87.github.io/ttrpg-character-sheet']
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
@@ -62,7 +62,7 @@ app.listen(port, '0.0.0.0', () => {
 });
 
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080', 'http://localhost:1234', 'http://localhost:4200', 'https://adavidson87.github.io/ttrpg-character-sheet');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   res.setHeader('Access-Control-Allow-Credentials', true);

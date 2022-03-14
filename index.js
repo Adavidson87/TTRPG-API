@@ -46,7 +46,7 @@ app.use(cors(
   //   } return callback(null, true);}}
 ));
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080', 'http://localhost:1234', 'http://localhost:4200', 'https://adavidson87.github.io/ttrpg-character-sheet');
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080, http://localhost:1234, http://localhost:4200, https://adavidson87.github.io/ttrpg-character-sheet');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Origin, Accept');
   res.setHeader('Access-Control-Allow-Credentials', true);

@@ -20,6 +20,34 @@ const express = require('express'),
 
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
+app.use(cors(
+  {
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        let message = "The CORS policy of this application doesn't allow access from origin " + origin;
+        return callback(new Error(message), false);
+      }
+      return callback(null, true);
+    }
+  }));
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:1234', 'https://adavidson87.github.io/ttrpg-character-sheet');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Origin, Accept');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  // handle OPTIONS method
+  if ('OPTIONS' == req.method) {
+    return res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+let allowedOrigins = ['http://localhost:8080', 'http://localhost:1234', 'http://localhost:4200', 'https://adavidson87.github.io/ttrpg-character-sheet']
+let auth = require('./auth')(app);
+const passport = require('passport');
+require(passport);
+
 app.use(express.static('public'));
 app.use(express.json());
 app.use('/classes', CharacterClassesRouter);
@@ -37,31 +65,6 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Error');
 });
-app.use(cors(
-  // {origin: (origin, callback) => {
-  //   if (!origin) return callback(null, true);
-  //   if (allowedOrigins.indexOf(origin) === -1) {
-  //     let message = "The CORS policy of this application doesn't allow access from origin " + origin;
-  //     return callback(new Error(message), false);
-  //   } return callback(null, true);}}
-));
-app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:1234', 'https://adavidson87.github.io/ttrpg-character-sheet');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Origin, Accept');
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  // handle OPTIONS method
-  if ('OPTIONS' == req.method) {
-    return res.sendStatus(200);
-  } else {
-    next();
-  }
-});
-let allowedOrigins = ['http://localhost:8080', 'http://localhost:1234', 'http://localhost:4200', 'https://adavidson87.github.io/ttrpg-character-sheet']
-let auth = require('./auth')(app);
-const passport = require('passport');
-require('./passport');
-
 
 app.get('/', (req, res) => {
   res.send('My Characters');

@@ -15,15 +15,15 @@ let savedCharactersSchema = mongoose.Schema({
   Inventory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'InventoryItem' }],
   Spells: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Spell' }],
   Feats: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Feat' }],
-  Biography: String,
-  ImagePath: String,
+  Biography: { type: String },
+  ImagePath: { type: String },
 });
 
 let usersSchema = mongoose.Schema({
   Username: { type: String, required: true },
   Password: { type: String, required: true },
   Email: { type: String, required: true },
-  SavedCharacters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }]
+  MyCharacters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Character' }]
 })
 
 usersSchema.statics.hashPassword = (password) => {

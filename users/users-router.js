@@ -114,7 +114,7 @@ UsersRouter.post('/', [
  */
 UsersRouter.post('/:Username/savedCharacters/:SavedCharacterId', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
-    $push: { SavedCharacters: req.params.SavedCharacterId }
+    $push: { MyCharacters: req.params.SavedCharacterId }
   },
     { new: true },
     (err, updatedUser) => {
@@ -136,7 +136,7 @@ UsersRouter.post('/:Username/savedCharacters/:SavedCharacterId', passport.authen
 */
 UsersRouter.delete('/:Username/savedCharacters/:SavedCharacterId', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
-    $pull: { CharacterList: req.params.CharacterId }
+    $pull: { MyCharacters: req.params.CharacterId }
   },
     { new: true },
     (err, updatedUser) => {

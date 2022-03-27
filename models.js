@@ -2,15 +2,16 @@ const mongoose = require('mongoose'),
   bcrypt = require('bcrypt');
 
 let savedCharactersSchema = mongoose.Schema({
+  Portrait: { type: String },
   Name: { type: String, required: true },
   Class: { type: String, required: true },
   Race: { type: String, required: true },
-  Strength: { type: Number, required: true },
-  Dexterity: { type: Number, required: true },
-  Constitution: { type: Number, required: true },
-  Intelligence: { type: Number, required: true },
-  Wisdom: { type: Number, required: true },
-  Charisma: { type: Number, required: true },
+  Strength: { type: String, required: true },
+  Dexterity: { type: String, required: true },
+  Constitution: { type: String, required: true },
+  Intelligence: { type: String, required: true },
+  Wisdom: { type: String, required: true },
+  Charisma: { type: String, required: true },
   Gender: { type: String },
   Inventory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'InventoryItem' }],
   Spells: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Spell' }],
@@ -37,16 +38,14 @@ usersSchema.methods.validatePassword = function (password) {
 let racesSchema = mongoose.Schema({
   Name: { type: String, required: true },
   Description: { type: String, required: true },
-  RacialTraits: [String],
-  Languages: [String],
-  FavoredClass: { type: String }
+  RacialTraits: [Array],
+  Languages: [Array],
 })
 
 let characterClassesSchema = mongoose.Schema({
   Name: { type: String, required: true },
   Description: { type: String, required: true },
-  Proficiencies: [String],
-  ClassAbilities: [String],
+  ClassFeatures: { type: Array },
 })
 
 let inventoryItemsSchema = mongoose.Schema({

@@ -29,7 +29,7 @@ CharacterClassesRouter.post('/', [
   check('Name', 'Name is required').not().isEmpty(),
   check('Name', 'Non alphanumeric characters are not allowed in CharacterClass names.').isAlphanumeric(),
   check('Description', 'Description is required').not().isEmpty(),
-  check('ClassAbilities', 'Class abilites are required').not().isEmpty(),
+  check('ClassFeatures', 'Features are required').not().isEmpty(),
 ], passport.authenticate('jwt', { session: false }), (req, res) => {
   let errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -43,8 +43,7 @@ CharacterClassesRouter.post('/', [
         CharacterClasses.create({
           Name: req.body.Name,
           Description: req.body.Description,
-          ClassAbilities: req.body.ClassAbilities,
-          Proficiencies: req.body.Proficiencies
+          ClassFeatures: req.body.ClassFeatures,
         })
           .then((characterClass) => { res.status(201).json(characterClass) })
           .catch((error) => {
@@ -67,8 +66,8 @@ CharacterClassesRouter.put('/:Name', passport.authenticate('jwt', { session: fal
   if (req.body.Description) {
     obj.Description = req.body.Description
   }
-  if (req.body.ClassAbilities) {
-    obj.ClassAbilities = req.body.ClassAbilities
+  if (req.body.ClassFeatures) {
+    obj.ClassFeatures = req.body.ClassFeatures
   }
   if (req.body.Proficiencies) {
     obj.Proficiencies = req.body.Proficiencies

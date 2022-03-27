@@ -24,7 +24,7 @@ SavedCharactersRouter.get('/', passport.authenticate('jwt', { session: false }),
  */
 SavedCharactersRouter.get('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   SavedCharacters.findOne({ Name: req.params.Name }).then((savedCharacter) => {
-    res.json(savedCharacter);
+    res.status(201).json(savedCharacter);
   }).catch((err) => {
     console.error(err);
     res.status(500).send('Error: ' + err)
@@ -51,11 +51,12 @@ SavedCharactersRouter.post('/', [
     return res.status(422).json({ errors: errors.array() });
   }
   SavedCharacters.findOne({ Name: req.body.Name })
-    .then((feat) => {
-      if (feat) {
+    .then((savedCharacter) => {
+      if (savedCharacter) {
         return res.status(400).send(req.body.Name + 'already exists');
       } else {
         SavedCharacters.create({
+          Portrait: req.body.Portrait,
           Name: req.body.Name,
           Class: req.body.Class,
           Race: req.body.Race,
@@ -89,6 +90,9 @@ SavedCharactersRouter.post('/', [
  */
 SavedCharactersRouter.put('/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
   let obj = {};
+  if (req.body.Portrait) {
+    obj.Portrait = req.body.Portrait
+  }
   if (req.body.Name) {
     obj.Name = req.body.Name
   }

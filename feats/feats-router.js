@@ -1,7 +1,7 @@
 const express = require('express'),
   FeatsRouter = express.Router(),
   Models = require('../models.js'),
-  Feats = Models.Feat,
+  Feats = Models.Feats,
   passport = require('passport'),
   { check, validationResult } = require('express-validator');
 

@@ -30,7 +30,7 @@ RacesRouter.get('/:Name', passport.authenticate('jwt', { session: false }), (req
 
 RacesRouter.post('/', [
   check('Name', 'Name is required').not().isEmpty(),
-  check('Name', 'Name cannot contain non alphanumeric characters.').isAlphanumeric(),
+  check('Name'),
   check('Description', 'Description is required').not().isEmpty(),
 ], passport.authenticate('jwt', { session: false }), (req, res) => {
   let errors = validationResult(req);

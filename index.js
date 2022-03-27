@@ -3,7 +3,7 @@ const express = require('express'),
   methodOverride = require('method-override'),
   bodyParser = require('body-parser'),
   app = express(),
-  CharacterClassesRouter = require('./classes/classes-router'),
+  CharacterClassesRouter = require('./characterClasses/charcterClasses-router'),
   FeatsRouter = require('./feats/feats-router'),
   InventoryItemsRouter = require('./inventoryItems/inventoryItems-router'),
   RacesRouter = require('./races/races-router'),
@@ -11,10 +11,11 @@ const express = require('express'),
   SpellsRouter = require('./spells/spells-router'),
   UsersRouter = require('./users/users-router'),
   mongoose = require('mongoose'),
-  cors = require('cors');
+  cors = require('cors'),
+  config = require('./config');
 
-// mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect('mongodb://localhost:27017/TTRPG-API', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(config.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect('mongodb://localhost:27017/TTRPG-API', { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(cors(
   {
@@ -30,7 +31,7 @@ app.use(cors(
 ));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:1234', 'http://localhost:8080', 'https://adavidson87.github.io/ttrpg-character-sheet');
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:1234', 'http://localhost:8080', 'http://localhost:27027', 'https://adavidson87.github.io/ttrpg-character-sheet');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Origin, Accept');
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -48,7 +49,7 @@ require('./passport');
 
 app.use(express.static('public'));
 app.use(express.json());
-app.use('/classes', CharacterClassesRouter);
+app.use('/characterClasses', CharacterClassesRouter);
 app.use('/feats', FeatsRouter);
 app.use('/inventoryItems', InventoryItemsRouter);
 app.use('/races', RacesRouter);
